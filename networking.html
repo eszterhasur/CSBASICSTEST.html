@@ -170,6 +170,10 @@ function build(){
       input.name = "q" + idx;
       input.value = ans;
 
+      input.id = id;
+      label.setAttribute("for", id);
+
+
       label.appendChild(input);
       label.appendChild(document.createTextNode(" " + ans));
       div.appendChild(label);
