@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -37,14 +37,15 @@
 
 <script>
 const game = document.getElementById('game');
-const width = 38; // characters
-const height = 27; // lines
+const width = 38;
+const height = 27;
 
 let map = [];
 for (let y = 0; y < height; y++) {
   map[y] = [];
   for (let x = 0; x < width; x++) {
-    if (y === height - 1) map[y][x] = '_'; // floor
+    if (y === height - 1) map[y][x] = '_';
+    else if (y < 4 && Math.random() < 0.05) map[y][x] = '☆';
     else map[y][x] = ' ';
   }
 }
@@ -52,24 +53,33 @@ for (let y = 0; y < height; y++) {
 let cat = {
   x: 5,
   y: height - 2,
-  art: [" /\\_/\\", "( o.o )", "> ^ <"],
-  chasing: false
+  art: [
+    "      /\\__ /\\",
+    "    ( •    •    )  ☆",
+    "    /  U   U  \\",
+  ],
+  chasing: false,
+  runaway: false,
+  dir: 1
 };
 
 let ball = {
-  x: 40,
+  x: 20,
   y: 0,
   vx: 0,
   vy: 0,
   held: false,
-  gravity: 0.1
+  gravity: 0.2
 };
 
 function draw() {
   let display = map.map(row => row.slice());
 
   if (!ball.held) {
-    display[Math.round(ball.y)][Math.round(ball.x)] = 'O';
+    const bx = Math.round(ball.x);
+    const by = Math.round(ball.y);
+    if (by >= 0 && by < height && bx >= 0 && bx < width)
+      display[by][bx] = 'o';
   }
 
   for (let i = 0; i < cat.art.length; i++) {
@@ -91,28 +101,34 @@ function update() {
 
     if (ball.y >= height - 2) {
       ball.y = height - 2;
-      ball.vy *= -0.5;
+      ball.vy *= -0.4;
+      if (Math.abs(ball.vy) < 0.1) ball.vy = 0;
     }
   }
 
-  if (!cat.chasing) {
-    // wander
-    if (Math.random() < 0.01) cat.x += Math.random() < 0.5 ? -1 : 1;
-  } else {
-    if (Math.abs(ball.x - cat.x) > 1) {
+  if (cat.runaway) {
+    cat.x += cat.dir;
+    if (cat.x <= 0 || cat.x >= width - 18) {
+      cat.runaway = false;
+    }
+  } else if (cat.chasing) {
+    if (Math.abs(ball.x - cat.x) > 2) {
       cat.x += ball.x > cat.x ? 1 : -1;
     } else {
-      cat.chasing = false; // reached ball
+      cat.chasing = false;
+      cat.runaway = true;
+      cat.dir = ball.x > cat.x ? -1 : 1;
     }
+  } else {
+    if (Math.random() < 0.01) cat.x += Math.random() < 0.5 ? -1 : 1;
   }
 
-  cat.x = Math.max(0, Math.min(width - 10, cat.x));
+  cat.x = Math.max(0, Math.min(width - 18, cat.x));
 
   draw();
   requestAnimationFrame(update);
 }
 
-// click to pick up / throw the ball
 game.addEventListener('mousedown', e => {
   const rect = game.getBoundingClientRect();
   const mouseX = Math.floor((e.clientX - rect.left) / (rect.width / width));
@@ -137,10 +153,10 @@ game.addEventListener('mouseup', e => {
     ball.vx = (Math.random() - 0.5) * 2;
     ball.vy = -2;
     cat.chasing = true;
+    cat.runaway = false;
   }
 });
 
-// Init
 draw();
 update();
 </script>
