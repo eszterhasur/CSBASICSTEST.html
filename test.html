@@ -3,391 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Cat Game</title>
+    <title>Tamagotchi Cat Game</title>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: 'Arial', sans-serif;
         }
-        
-        .container {
-            background: white;
+
+        .game-container {
+            background: #fff;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             text-align: center;
             max-width: 600px;
+            width: 90%;
         }
-        
+
         h1 {
             color: #333;
-            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 28px;
         }
-        
-        #gameCanvas {
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            display: block;
-            margin: 20px auto;
-            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
-            cursor: crosshair;
-        }
-        
-        .info {
+
+        .subtitle {
             color: #666;
+            margin-bottom: 30px;
             font-size: 14px;
-            margin-top: 15px;
         }
-        
-        .score {
-            font-size: 18px;
-            color: #667eea;
+
+        .game-area {
+            background: #f0f0f0;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cat-display {
+            font-size: 80px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            letter-spacing: 2px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
             font-weight: bold;
-            margin: 10px 0;
         }
-        
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
         button {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 12px 20px;
+            border-radius: 10px;
             font-size: 14px;
-            margin-top: 10px;
-            transition: background 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
+
         button:hover {
-            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            font-size: 16px;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
+            height: 20px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .happy {
+            background-color: #4CAF50;
+        }
+
+        .neutral {
+            background-color: #FFC107;
+        }
+
+        .sad {
+            background-color: #f44336;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🐱 Interactive Cat Game</h1>
-        <canvas id="gameCanvas" width="500" height="400"></canvas>
-        <div class="score">Score: <span id="score">0</span></div>
-        <div class="info">
-            <p>Click to throw the ball! Watch the cat catch it!</p>
+    <div class="game-container">
+        <h1>🐱 Tamagotchi Cat</h1>
+        <p class="subtitle">Take care of your digital pet!</p>
+
+        <div class="game-area">
+            <div class="cat-display" id="catDisplay">₍^.  ̫.^₎⟆</div>
+            <div class="message" id="message"></div>
         </div>
-        <button onclick="resetGame()">Reset Game</button>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Hunger</div>
+                <div class="health-bar">
+                    <div class="health-fill" id="hungerBar" style="width: 70%;"></div>
+                </div>
+                <div class="stat-value" id="hungerValue">70%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Happiness</div>
+                <div class="health-bar">
+                    <div class="health-fill" id="happinessBar" style="width: 80%;"></div>
+                </div>
+                <div class="stat-value" id="happinessValue">80%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Energy</div>
+                <div class="health-bar">
+                    <div class="health-fill" id="energyBar" style="width: 60%;"></div>
+                </div>
+                <div class="stat-value" id="energyValue">60%</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="feed()">🍖 Feed</button>
+            <button onclick="play()">🎾 Play</button>
+            <button onclick="sleep()">😴 Sleep</button>
+            <button onclick="pet()">🤚 Pet</button>
+        </div>
+
+        <div id="statusIndicator" style="text-align: center; margin-top: 15px;">
+            <span class="status-indicator neutral"></span>
+            <span id="statusText" style="color: #666;">Cat is resting...</span>
+        </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Game variables
-        let score = 0;
-        let gameActive = true;
-        
-        // Cat object
-        const cat = {
-            x: 250,
-            baseY: 200,
-            y: 200,
-            width: 60,
-            height: 50,
-            vx: 0,
-            vy: 0,
-            holdingBall: false,
-            verticalMovement: 0,
-            verticalVelocity: 0,
-            randomDirection: 0
+        // Game State
+        let catState = {
+            hunger: 70,
+            happiness: 80,
+            energy: 60,
+            position: 0,
+            direction: 1,
+            isWalking: false,
+            lastAction: 'resting'
         };
-        
-        // Ball object
-        const ball = {
-            x: 400,
-            y: 50,
-            vx: 0,
-            vy: 0,
-            radius: 8,
-            gravity: 0.3,
-            friction: 0.98,
-            floating: true
-        };
-        
-        // Draw cat with new ASCII art inspired design
-        function drawCat() {
-            const x = cat.x;
-            const y = cat.y;
-            
-            ctx.save();
-            ctx.translate(x, y);
-            
-            // Head
-            ctx.fillStyle = '#FF9E64';
-            ctx.beginPath();
-            ctx.ellipse(0, -5, 25, 28, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Ears
-            ctx.fillStyle = '#FF9E64';
-            ctx.beginPath();
-            ctx.moveTo(-15, -30);
-            ctx.lineTo(-10, -50);
-            ctx.lineTo(-5, -30);
-            ctx.fill();
-            
-            ctx.beginPath();
-            ctx.moveTo(15, -30);
-            ctx.lineTo(10, -50);
-            ctx.lineTo(5, -30);
-            ctx.fill();
-            
-            // Inner ears
-            ctx.fillStyle = '#FFB6A3';
-            ctx.beginPath();
-            ctx.ellipse(-12, -40, 4, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(12, -40, 4, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Eyes
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(-8, -8, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(8, -8, 4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Eyes shine
-            ctx.fillStyle = '#FFF';
-            ctx.beginPath();
-            ctx.arc(-6, -10, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(10, -10, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Mouth
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(-2, 5);
-            ctx.quadraticCurveTo(0, 10, 2, 5);
-            ctx.stroke();
-            
-            // Nose
-            ctx.fillStyle = '#FFB6A3';
-            ctx.beginPath();
-            ctx.moveTo(-3, 2);
-            ctx.lineTo(3, 2);
-            ctx.lineTo(0, 6);
-            ctx.fill();
-            
-            // Body
-            ctx.fillStyle = '#FF9E64';
-            ctx.beginPath();
-            ctx.ellipse(0, 20, 20, 30, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Front paws
-            ctx.fillStyle = '#FF9E64';
-            ctx.fillRect(-12, 40, 8, 15);
-            ctx.fillRect(4, 40, 8, 15);
-            
-            // Paw pads
-            ctx.fillStyle = '#FFB6A3';
-            ctx.beginPath();
-            ctx.arc(-8, 55, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(8, 55, 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Tail
-            ctx.strokeStyle = '#FF9E64';
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.moveTo(15, 15);
-            ctx.quadraticCurveTo(40, 10, 35, -20);
-            ctx.stroke();
-            
-            // Ball in paws (if holding)
-            if (cat.holdingBall) {
-                ctx.fillStyle = '#FF1744';
-                ctx.beginPath();
-                ctx.arc(0, 40, 10, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Ball shine
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.beginPath();
-                ctx.arc(-3, 37, 3, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            ctx.restore();
+
+        // Cat ASCII designs
+        const catFacingRight = '₍^.  ̫.^₎⟆';
+        const catFacingLeft = '⟅₍^.  ̫.^₎';
+
+        // Initialize game
+        function init() {
+            updateDisplay();
+            gameLoop();
+            // Auto-decay stats every 10 seconds
+            setInterval(decayStats, 10000);
         }
-        
-        // Draw ball
-        function drawBall() {
-            ctx.save();
-            
-            // Ball
-            ctx.fillStyle = '#FF1744';
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Ball shine
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.beginPath();
-            ctx.arc(ball.x - 3, ball.y - 3, 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-        }
-        
-        // Update cat position with random vertical movement
-        function updateCat() {
-            if (cat.holdingBall) {
-                // Random vertical movement while holding ball
-                if (Math.random() < 0.05) {
-                    cat.randomDirection = (Math.random() - 0.5) * 4;
-                }
-                
-                cat.verticalVelocity += cat.randomDirection;
-                cat.verticalVelocity *= 0.95;
-                cat.verticalMovement += cat.verticalVelocity;
-                
-                // Limit vertical movement
-                cat.verticalMovement = Math.max(-40, Math.min(40, cat.verticalMovement));
-                cat.y = cat.baseY + cat.verticalMovement;
-                
-                // Keep cat in bounds horizontally
-                cat.x = Math.max(40, Math.min(canvas.width - 40, cat.x));
-            }
-        }
-        
-        // Update ball physics
-        function updateBall() {
-            if (!cat.holdingBall) {
-                // Apply gravity
-                ball.vy += ball.gravity;
-                
-                // Update position
-                ball.x += ball.vx;
-                ball.y += ball.vy;
-                
-                // Apply friction
-                ball.vx *= ball.friction;
-                ball.vy *= ball.friction;
-                
-                // Bounce off ground
-                if (ball.y + ball.radius >= canvas.height) {
-                    ball.y = canvas.height - ball.radius;
-                    ball.vy *= -0.7;
-                    ball.vx *= 0.8;
-                }
-                
-                // Bounce off walls
-                if (ball.x - ball.radius <= 0 || ball.x + ball.radius >= canvas.width) {
-                    ball.vx *= -0.8;
-                    ball.x = Math.max(ball.radius, Math.min(canvas.width - ball.radius, ball.x));
-                }
-                
-                // Collision detection with cat
-                checkCatBallCollision();
-            }
-        }
-        
-        // Check collision between cat and ball
-        function checkCatBallCollision() {
-            const dx = ball.x - cat.x;
-            const dy = ball.y - (cat.y + 10);
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 40) {
-                cat.holdingBall = true;
-                ball.floating = false;
-                score++;
-                document.getElementById('score').textContent = score;
-            }
-        }
-        
-        // Drop ball after holding
-        function dropBall() {
-            if (cat.holdingBall) {
-                cat.holdingBall = false;
-                ball.floating = true;
-                ball.x = cat.x;
-                ball.y = cat.y + 20;
-                ball.vx = (Math.random() - 0.5) * 6;
-                ball.vy = -8;
-                
-                // Reset vertical movement
-                cat.verticalMovement = 0;
-                cat.verticalVelocity = 0;
-            }
-        }
-        
-        // Handle canvas click to throw ball
-        canvas.addEventListener('click', (e) => {
-            if (!cat.holdingBall) {
-                const rect = canvas.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const clickY = e.clientY - rect.top;
-                
-                const dx = clickX - ball.x;
-                const dy = clickY - ball.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                ball.vx = (dx / distance) * 8;
-                ball.vy = (dy / distance) * 8;
-            } else {
-                dropBall();
-            }
-        });
-        
-        // Game loop
+
+        // Main game loop - cat walks
         function gameLoop() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Update game
-            updateBall();
-            updateCat();
-            
-            // Draw everything
-            drawBall();
-            drawCat();
-            
-            // Auto-drop ball every 3 seconds
-            if (cat.holdingBall && Math.random() < 0.002) {
-                dropBall();
+            if (catState.energy > 10) {
+                walkAnimation();
             }
+            setTimeout(gameLoop, 2000);
+        }
+
+        // Walking animation
+        function walkAnimation() {
+            const catDisplay = document.getElementById('catDisplay');
+            catState.direction = catState.direction > 0 ? -1 : 1;
             
-            requestAnimationFrame(gameLoop);
+            if (catState.direction > 0) {
+                catDisplay.textContent = catFacingRight;
+                catDisplay.style.marginLeft = '50px';
+            } else {
+                catDisplay.textContent = catFacingLeft;
+                catDisplay.style.marginLeft = '-50px';
+            }
         }
-        
-        // Reset game
-        function resetGame() {
-            score = 0;
-            document.getElementById('score').textContent = score;
-            cat.holdingBall = false;
-            cat.y = cat.baseY;
-            cat.verticalMovement = 0;
-            cat.verticalVelocity = 0;
-            ball.x = 400;
-            ball.y = 50;
-            ball.vx = 0;
-            ball.vy = 0;
+
+        // Action: Feed the cat
+        function feed() {
+            if (catState.hunger < 20) {
+                addMessage("Cat isn't hungry right now!");
+                return;
+            }
+            catState.hunger = Math.max(0, catState.hunger - 30);
+            catState.happiness = Math.min(100, catState.happiness + 10);
+            catState.energy = Math.max(0, catState.energy - 5);
+            addMessage("Cat is eating... nom nom! 😋");
+            updateDisplay();
         }
-        
+
+        // Action: Play with cat
+        function play() {
+            if (catState.energy < 20) {
+                addMessage("Cat is too tired to play!");
+                return;
+            }
+            catState.happiness = Math.min(100, catState.happiness + 30);
+            catState.hunger = Math.min(100, catState.hunger + 20);
+            catState.energy = Math.max(0, catState.energy - 25);
+            addMessage("Cat is pouncing around! 🎾");
+            updateDisplay();
+        }
+
+        // Action: Pet the cat
+        function pet() {
+            catState.happiness = Math.min(100, catState.happiness + 15);
+            catState.energy = Math.max(0, catState.energy - 3);
+            addMessage("Cat purrs contentedly... 😸");
+            updateDisplay();
+        }
+
+        // Action: Let cat sleep
+        function sleep() {
+            catState.energy = Math.min(100, catState.energy + 40);
+            catState.hunger = Math.min(100, catState.hunger + 15);
+            catState.happiness = Math.max(0, catState.happiness - 5);
+            addMessage("Cat is taking a nap... zzz");
+            updateDisplay();
+        }
+
+        // Decay stats over time
+        function decayStats() {
+            catState.hunger = Math.min(100, catState.hunger + 8);
+            catState.happiness = Math.max(0, catState.happiness - 5);
+            catState.energy = Math.max(0, catState.energy - 3);
+            updateDisplay();
+        }
+
+        // Update display
+        function updateDisplay() {
+            // Update bars
+            document.getElementById('hungerBar').style.width = catState.hunger + '%';
+            document.getElementById('hungerValue').textContent = catState.hunger + '%';
+            
+            document.getElementById('happinessBar').style.width = catState.happiness + '%';
+            document.getElementById('happinessValue').textContent = catState.happiness + '%';
+            
+            document.getElementById('energyBar').style.width = catState.energy + '%';
+            document.getElementById('energyValue').textContent = catState.energy + '%';
+
+            // Update status indicator
+            updateStatus();
+        }
+
+        // Update status indicator based on happiness
+        function updateStatus() {
+            const indicator = document.querySelector('.status-indicator');
+            const statusText = document.getElementById('statusText');
+            
+            if (catState.happiness > 70) {
+                indicator.className = 'status-indicator happy';
+                statusText.textContent = 'Cat is happy! 😸';
+            } else if (catState.happiness > 40) {
+                indicator.className = 'status-indicator neutral';
+                statusText.textContent = 'Cat is neutral 😐';
+            } else {
+                indicator.className = 'status-indicator sad';
+                statusText.textContent = 'Cat is sad... 😿';
+            }
+        }
+
+        // Add temporary message
+        function addMessage(text) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            setTimeout(() => {
+                messageDiv.textContent = '';
+            }, 2000);
+        }
+
         // Start the game
-        gameLoop();
+        init();
     </script>
 </body>
 </html>
