@@ -3,361 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamagotchi Cat Game</title>
+    <title>ASCII Tamagotchi Cat Game</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            font-family: 'Courier New', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Arial', sans-serif;
         }
-
         .game-container {
-            background: #fff;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            background: #1a1a2e;
+            border: 3px solid #00d4ff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            color: #00ff00;
+        }
+        .title {
             text-align: center;
-            max-width: 600px;
-            width: 90%;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #00d4ff;
         }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .game-area {
-            background: #f0f0f0;
-            border: 3px solid #667eea;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
         .cat-display {
-            font-size: 80px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            letter-spacing: 2px;
-            height: 100px;
+            background: #0f0f1e;
+            border: 2px solid #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.4;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 200px;
+            text-align: center;
         }
-
         .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 14px;
         }
-
         .stat-box {
-            background: #f9f9f9;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            color: #333;
+            background: #16213e;
+            border: 1px solid #00d4ff;
+            padding: 10px;
+            border-radius: 5px;
         }
-
         .stat-label {
+            color: #00d4ff;
             font-size: 12px;
-            color: #999;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
         }
-
         .stat-value {
-            font-size: 24px;
+            color: #00ff00;
+            font-size: 16px;
             font-weight: bold;
-            color: #667eea;
         }
-
-        .health-bar {
+        .progress-bar {
             width: 100%;
-            height: 20px;
-            background: #ddd;
-            border-radius: 10px;
+            height: 15px;
+            background: #0a0a15;
+            border: 1px solid #00ff00;
+            margin-top: 5px;
+            border-radius: 3px;
             overflow: hidden;
-            margin-top: 8px;
         }
-
-        .health-fill {
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: #00ff00;
             transition: width 0.3s ease;
         }
-
-        .actions {
+        .buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin: 15px 0;
         }
-
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #00d4ff;
+            color: #1a1a2e;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
-
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #00ff00;
+            transform: scale(1.05);
         }
-
         button:active {
-            transform: translateY(0);
+            transform: scale(0.95);
         }
-
         .message {
-            font-size: 16px;
-            color: #666;
-            margin-top: 15px;
-            font-style: italic;
-            height: 20px;
+            background: #16213e;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            min-height: 30px;
+            color: #ffff00;
         }
-
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .happy {
-            background-color: #4CAF50;
-        }
-
-        .neutral {
-            background-color: #FFC107;
-        }
-
-        .sad {
-            background-color: #f44336;
+        .status {
+            text-align: center;
+            font-size: 12px;
+            color: #00d4ff;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <h1>🐱 Tamagotchi Cat</h1>
-        <p class="subtitle">Take care of your digital pet!</p>
-
-        <div class="game-area">
-            <div class="cat-display" id="catDisplay">₍^.  ̫.^₎⟆</div>
-            <div class="message" id="message"></div>
-        </div>
-
+        <div class="title">🐱 ASCII TAMAGOTCHI CAT 🐱</div>
+        
+        <div class="cat-display" id="catDisplay"></div>
+        
         <div class="stats">
             <div class="stat-box">
-                <div class="stat-label">Hunger</div>
-                <div class="health-bar">
-                    <div class="health-fill" id="hungerBar" style="width: 70%;"></div>
+                <div class="stat-label">HUNGER</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="hungerBar"></div>
                 </div>
-                <div class="stat-value" id="hungerValue">70%</div>
+                <div class="stat-value" id="hungerValue">100</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Happiness</div>
-                <div class="health-bar">
-                    <div class="health-fill" id="happinessBar" style="width: 80%;"></div>
+                <div class="stat-label">HAPPINESS</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="happinessBar"></div>
                 </div>
-                <div class="stat-value" id="happinessValue">80%</div>
+                <div class="stat-value" id="happinessValue">100</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Energy</div>
-                <div class="health-bar">
-                    <div class="health-fill" id="energyBar" style="width: 60%;"></div>
+                <div class="stat-label">ENERGY</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="energyBar"></div>
                 </div>
-                <div class="stat-value" id="energyValue">60%</div>
+                <div class="stat-value" id="energyValue">100</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">HEALTH</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="healthBar"></div>
+                </div>
+                <div class="stat-value" id="healthValue">100</div>
             </div>
         </div>
-
-        <div class="actions">
-            <button onclick="feed()">🍖 Feed</button>
-            <button onclick="play()">🎾 Play</button>
-            <button onclick="sleep()">😴 Sleep</button>
-            <button onclick="pet()">🤚 Pet</button>
+        
+        <div class="message" id="message">Your cat is waiting for you!</div>
+        
+        <div class="buttons">
+            <button onclick="game.feed()">🍖 FEED</button>
+            <button onclick="game.play()">🎮 PLAY</button>
+            <button onclick="game.sleep()">😴 SLEEP</button>
+            <button onclick="game.pet()">👋 PET</button>
         </div>
-
-        <div id="statusIndicator" style="text-align: center; margin-top: 15px;">
-            <span class="status-indicator neutral"></span>
-            <span id="statusText" style="color: #666;">Cat is resting...</span>
+        
+        <div class="status">
+            <p id="age">Age: 0 minutes</p>
+            <button onclick="game.reset()" style="width: 100%; margin-top: 10px;">🔄 RESET GAME</button>
         </div>
     </div>
 
     <script>
-        // Game State
-        let catState = {
-            hunger: 70,
-            happiness: 80,
-            energy: 60,
-            position: 0,
-            direction: 1,
-            isWalking: false,
-            lastAction: 'resting'
+        const game = {
+            hunger: 100,
+            happiness: 100,
+            energy: 100,
+            health: 100,
+            age: 0,
+            currentState: 'happy',
+            gameActive: true,
+
+            catStates: {
+                happy: `
+    /\\_/\\
+   ( o.o )
+    > ^ <
+   /|   |\\
+  (_|   |_)`,
+                hungry: `
+    /\\_/\\
+   ( o.o )
+    < v >
+   /|   |\\
+  (_|   |_)
+  MEOW MEOW!`,
+                tired: `
+    /\\_/\\
+   ( -.- )
+    > ^ <
+   /|   |\\
+  (_|   |_)
+    zzzZZ`,
+                sad: `
+    /\\_/\\
+   ( T.T )
+    > v <
+   /|   |\\
+  (_|   |_)`,
+                playing: `
+    /\\_/\\
+   ( ^.^ )
+    > - <
+   /|   |\\
+  (_|   |_)
+  HISS PURR!`,
+                sick: `
+    /\\_/\\
+   ( x.x )
+    > ~ <
+   /|   |\\
+  (_|   |_)
+  *cough*`
+            },
+
+            init() {
+                this.updateDisplay();
+                setInterval(() => this.tick(), 3000);
+            },
+
+            tick() {
+                if (!this.gameActive) return;
+                
+                this.hunger = Math.max(0, this.hunger - 5);
+                this.happiness = Math.max(0, this.happiness - 3);
+                this.energy = Math.min(100, this.energy + 1);
+                
+                if (this.hunger > 70) {
+                    this.health = Math.max(0, this.health - 2);
+                }
+                
+                if (this.happiness < 30) {
+                    this.health = Math.max(0, this.health - 1);
+                }
+                
+                if (this.energy < 20) {
+                    this.happiness = Math.max(0, this.happiness - 2);
+                }
+                
+                this.age++;
+                this.updateState();
+                this.updateDisplay();
+                
+                if (this.health <= 0) {
+                    this.gameOver();
+                }
+            },
+
+            updateState() {
+                if (this.health <= 0) {
+                    this.currentState = 'sick';
+                } else if (this.hunger > 70) {
+                    this.currentState = 'hungry';
+                } else if (this.energy < 20) {
+                    this.currentState = 'tired';
+                } else if (this.happiness < 30) {
+                    this.currentState = 'sad';
+                } else {
+                    this.currentState = 'happy';
+                }
+            },
+
+            feed() {
+                if (!this.gameActive) return;
+                if (this.hunger <= 10) {
+                    document.getElementById('message').textContent = "Your cat is not hungry! 🤢";
+                    this.happiness = Math.max(0, this.happiness - 10);
+                } else {
+                    this.hunger = Math.min(100, this.hunger + 40);
+                    this.happiness = Math.min(100, this.happiness + 5);
+                    document.getElementById('message').textContent = "Your cat enjoyed a meal! 😋";
+                }
+                this.updateDisplay();
+            },
+
+            play() {
+                if (!this.gameActive) return;
+                if (this.energy < 20) {
+                    document.getElementById('message').textContent = "Your cat is too tired! 😴";
+                } else {
+                    this.currentState = 'playing';
+                    this.happiness = Math.min(100, this.happiness + 30);
+                    this.energy = Math.max(0, this.energy - 25);
+                    this.hunger = Math.max(0, this.hunger - 15);
+                    document.getElementById('message').textContent = "Your cat had a great time playing! 🎉";
+                    this.updateDisplay();
+                    setTimeout(() => {
+                        this.updateState();
+                        this.updateDisplay();
+                    }, 1000);
+                }
+            },
+
+            sleep() {
+                if (!this.gameActive) return;
+                this.currentState = 'tired';
+                this.energy = Math.min(100, this.energy + 50);
+                this.health = Math.min(100, this.health + 10);
+                document.getElementById('message').textContent = "Your cat is sleeping peacefully... 💤";
+                this.updateDisplay();
+                setTimeout(() => {
+                    this.updateState();
+                    this.updateDisplay();
+                }, 2000);
+            },
+
+            pet() {
+                if (!this.gameActive) return;
+                this.happiness = Math.min(100, this.happiness + 20);
+                this.health = Math.min(100, this.health + 5);
+                document.getElementById('message').textContent = "Your cat purrs happily! 😸";
+                this.updateDisplay();
+            },
+
+            updateDisplay() {
+                document.getElementById('catDisplay').textContent = this.catStates[this.currentState];
+                document.getElementById('hungerValue').textContent = Math.round(this.hunger);
+                document.getElementById('happinessValue').textContent = Math.round(this.happiness);
+                document.getElementById('energyValue').textContent = Math.round(this.energy);
+                document.getElementById('healthValue').textContent = Math.round(this.health);
+                
+                document.getElementById('hungerBar').style.width = Math.max(0, Math.min(100, 100 - this.hunger)) + '%';
+                document.getElementById('happinessBar').style.width = this.happiness + '%';
+                document.getElementById('energyBar').style.width = this.energy + '%';
+                document.getElementById('healthBar').style.width = this.health + '%';
+                
+                document.getElementById('age').textContent = `Age: ${this.age} minutes`;
+            },
+
+            gameOver() {
+                this.gameActive = false;
+                this.currentState = 'sick';
+                document.getElementById('message').textContent = "Oh no! Your cat needs a break... Game Over! 😿";
+                document.getElementById('catDisplay').textContent = this.catStates.sick;
+            },
+
+            reset() {
+                this.hunger = 100;
+                this.happiness = 100;
+                this.energy = 100;
+                this.health = 100;
+                this.age = 0;
+                this.currentState = 'happy';
+                this.gameActive = true;
+                document.getElementById('message').textContent = "Your cat is waiting for you!";
+                this.updateDisplay();
+            }
         };
 
-        // Cat ASCII designs
-        const catFacingRight = '₍^.  ̫.^₎⟆';
-        const catFacingLeft = '⟅₍^.  ̫.^₎';
-
-        // Initialize game
-        function init() {
-            updateDisplay();
-            gameLoop();
-            // Auto-decay stats every 10 seconds
-            setInterval(decayStats, 10000);
-        }
-
-        // Main game loop - cat walks
-        function gameLoop() {
-            if (catState.energy > 10) {
-                walkAnimation();
-            }
-            setTimeout(gameLoop, 2000);
-        }
-
-        // Walking animation
-        function walkAnimation() {
-            const catDisplay = document.getElementById('catDisplay');
-            catState.direction = catState.direction > 0 ? -1 : 1;
-            
-            if (catState.direction > 0) {
-                catDisplay.textContent = catFacingRight;
-                catDisplay.style.marginLeft = '50px';
-            } else {
-                catDisplay.textContent = catFacingLeft;
-                catDisplay.style.marginLeft = '-50px';
-            }
-        }
-
-        // Action: Feed the cat
-        function feed() {
-            if (catState.hunger < 20) {
-                addMessage("Cat isn't hungry right now!");
-                return;
-            }
-            catState.hunger = Math.max(0, catState.hunger - 30);
-            catState.happiness = Math.min(100, catState.happiness + 10);
-            catState.energy = Math.max(0, catState.energy - 5);
-            addMessage("Cat is eating... nom nom! 😋");
-            updateDisplay();
-        }
-
-        // Action: Play with cat
-        function play() {
-            if (catState.energy < 20) {
-                addMessage("Cat is too tired to play!");
-                return;
-            }
-            catState.happiness = Math.min(100, catState.happiness + 30);
-            catState.hunger = Math.min(100, catState.hunger + 20);
-            catState.energy = Math.max(0, catState.energy - 25);
-            addMessage("Cat is pouncing around! 🎾");
-            updateDisplay();
-        }
-
-        // Action: Pet the cat
-        function pet() {
-            catState.happiness = Math.min(100, catState.happiness + 15);
-            catState.energy = Math.max(0, catState.energy - 3);
-            addMessage("Cat purrs contentedly... 😸");
-            updateDisplay();
-        }
-
-        // Action: Let cat sleep
-        function sleep() {
-            catState.energy = Math.min(100, catState.energy + 40);
-            catState.hunger = Math.min(100, catState.hunger + 15);
-            catState.happiness = Math.max(0, catState.happiness - 5);
-            addMessage("Cat is taking a nap... zzz");
-            updateDisplay();
-        }
-
-        // Decay stats over time
-        function decayStats() {
-            catState.hunger = Math.min(100, catState.hunger + 8);
-            catState.happiness = Math.max(0, catState.happiness - 5);
-            catState.energy = Math.max(0, catState.energy - 3);
-            updateDisplay();
-        }
-
-        // Update display
-        function updateDisplay() {
-            // Update bars
-            document.getElementById('hungerBar').style.width = catState.hunger + '%';
-            document.getElementById('hungerValue').textContent = catState.hunger + '%';
-            
-            document.getElementById('happinessBar').style.width = catState.happiness + '%';
-            document.getElementById('happinessValue').textContent = catState.happiness + '%';
-            
-            document.getElementById('energyBar').style.width = catState.energy + '%';
-            document.getElementById('energyValue').textContent = catState.energy + '%';
-
-            // Update status indicator
-            updateStatus();
-        }
-
-        // Update status indicator based on happiness
-        function updateStatus() {
-            const indicator = document.querySelector('.status-indicator');
-            const statusText = document.getElementById('statusText');
-            
-            if (catState.happiness > 70) {
-                indicator.className = 'status-indicator happy';
-                statusText.textContent = 'Cat is happy! 😸';
-            } else if (catState.happiness > 40) {
-                indicator.className = 'status-indicator neutral';
-                statusText.textContent = 'Cat is neutral 😐';
-            } else {
-                indicator.className = 'status-indicator sad';
-                statusText.textContent = 'Cat is sad... 😿';
-            }
-        }
-
-        // Add temporary message
-        function addMessage(text) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = text;
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 2000);
-        }
-
-        // Start the game
-        init();
+        game.init();
     </script>
 </body>
 </html>
