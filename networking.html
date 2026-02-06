@@ -5,6 +5,31 @@
 <title>Networking Test</title>
 <style>
 
+  .controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.controls button,
+.controls a {
+  background:#3b2a1a;
+  color:#ffcc99;
+  border:2px solid #ffcc99;
+  padding:10px 14px;
+  font-family: monospace;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.controls button:hover,
+.controls a:hover {
+  background:#ffcc99;
+  color:#3b2a1a;
+}
+
+
   pre {
   text-align: center;
 }
@@ -129,8 +154,11 @@
 
 <form id="quiz"></form>
 
-<button id="submitBtn" type="button" onclick="grade()">Submit</button>
-<a href="index.html" style="margin-left:14px;">[ Back ]</a>
+<div class="controls">
+  <button id="submitBtn" type="button" onclick="grade()">Submit</button>
+  <button type="button" onclick="resetQuiz()">Reset</button>
+  <a href="index.html">[ Back ]</a>
+</div>
 
 <div id="output" class="result" style="display:none;"></div>
 </div>
@@ -266,6 +294,13 @@ function escapeHtml(s){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
+
+  function resetQuiz(){
+  document.getElementById("output").style.display = "none";
+  document.getElementById("submitBtn").disabled = false;
+  build();
+}
+
 </script>
 
 </body>
